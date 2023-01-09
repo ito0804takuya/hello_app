@@ -1,4 +1,5 @@
 # hello_app
+vue.jsサンプル
 
 ## Project setup
 ```
