@@ -1,36 +1,56 @@
 <template>
   <div id="app">
     <!-- コンポーネントを使う -->
-    <!-- HelloWorldコンポーネントのtitleに、このコンポーネントのmessageの値をbindする -->
+    <!-- コンポーネントのtitleに、このコンポーネントのmessageの値をbindする -->
     <!-- result-eventというイベントが呼ばれるとappActionを発動 -->
-    <HelloWorld v-bind:title="message" v-on:result-event="appAction" />
-    <!-- <button v-on:click="doAction">change title</button> -->
-    <p>{{ result }}</p>
+    <Calc v-bind:title="message" v-on:result-event="appAction" />
+    <!-- logにHTMLコード（文字列）が入ってくるのでそれをHTMLとして表示 -->
+    <div><table v-html="log"></table></div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Calc from './components/Calc.vue';
 
 export default {
   // App.vueを使う側で、どういう名前で使うか
   name: 'App',
   components: {
-    HelloWorld
+    Calc
   },
+  // 変数を用意
   data: function() {
     return {
-      message: "Helloヘロー",
-      result: "no event",
+      message: "CALC",
+      result: [],
     };
   },
+  // 算術プロパティ
+  computed: {
+    // logには値をただ割り当てる訳にはいかないので、ここで色々加工する
+    log: function() {
+      let table = '<tr><th>Expression</th><th>Value</th></tr>';
+      for (const i in this.result) {
+        table += '<tr><td>' + this.result[i][0] + '</td><th>' + this.result[i][1] + '</th></tr>';
+      }
+      return table;
+    }
+  },
+  // コンポーネントのオブジェクトが作成された直後に実行される
+  created: function() {
+    const items = localStorage.getItem("log");
+    const logs = JSON.parse(items);
+    if (logs != null) { this.result = logs; }
+  },
   methods: {
-    // doAction: function() {
-    //   const input = prompt("new title:");
-    //   this.message = input;
-    // },
-    appAction: function(message) {
-      this.result = '*** you send"' + message + '" ***';
+    appAction: function(exp, res) {
+      this.result.unshift([exp, res]);
+      if (this.result.length > 10) {
+        this.result.pop();
+      }
+      const log = JSON.stringify(this.result);
+      console.log(log);
+      localStorage.setItem("log", log);
     }
   }
 }
@@ -41,8 +61,8 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  text-align: left;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 5px;
 }
 </style>
