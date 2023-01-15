@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- コンポーネントを使う -->
+    <!-- HelloWorldコンポーネントのtitleに、このコンポーネントのmessageの値をbindする -->
+    <!-- result-eventというイベントが呼ばれるとappActionを発動 -->
+    <HelloWorld v-bind:title="message" v-on:result-event="appAction" />
+    <!-- <button v-on:click="doAction">change title</button> -->
+    <p>{{ result }}</p>
   </div>
 </template>
 
@@ -9,9 +13,25 @@
 import HelloWorld from './components/HelloWorld.vue'
 
 export default {
+  // App.vueを使う側で、どういう名前で使うか
   name: 'App',
   components: {
     HelloWorld
+  },
+  data: function() {
+    return {
+      message: "Helloヘロー",
+      result: "no event",
+    };
+  },
+  methods: {
+    // doAction: function() {
+    //   const input = prompt("new title:");
+    //   this.message = input;
+    // },
+    appAction: function(message) {
+      this.result = '*** you send"' + message + '" ***';
+    }
   }
 }
 </script>
