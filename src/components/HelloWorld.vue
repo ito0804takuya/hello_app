@@ -1,16 +1,17 @@
 <template>
   <div class="hello">
     <h1>{{ title }}</h1>
-    <p>{{ message }}</p>
+    <pre v-on:click="clear">{{ message }}</pre>
     <hr>
-    <div>value: <input type="number" v-model="val"></div>
-    <div style="height:10px;"></div>
-    <table>
-      <tr><th>足す: </th><td>{{ add }}</td></tr>
-      <tr><th>引く: </th><td>{{ sub }}</td></tr>
-      <tr><th>かける: </th><td>{{ mult }}</td></tr>
-      <tr><th>割る: </th><td>{{ div }}</td></tr>
-    </table>
+
+    <!-- 一番上に重なっているCのタグをclickすると、その下のB, Aのonclickも発動する -->
+    <div id="out" class="out" v-on:click="a_event">A
+      <div id="mid" class="mid" v-on:click.self="b_event">B
+        <div id="in" class="in" v-on:click="c_event">C
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -23,26 +24,22 @@ export default {
   // 変数を用意（初期値とともに）
   data: function() {
     return {
-      message: "監視",
-      val: 0,
-      add: 0,
-      sub: 0,
-      mult: 0,
-      div: 0,
+      message: "はじめ",
     };
   },
-  watch: {
-    val: function(value) {
-      this.val = value;
-      const parsedVal = parseInt(value);
-      this.add = Math.floor(parsedVal + 2);
-      this.sub = Math.floor(parsedVal - 2);
-      this.mult = Math.floor(parsedVal * 2);
-      this.div = Math.floor(parsedVal / 2);
+  methods: {
+    a_event: function(event) {
+      this.message += "Aイベント [" + event.target.id + ' -> ' + event.currentTarget.id + "]\n";
+    },
+    b_event: function(event) {
+      this.message += "Bイベント [" + event.target.id + ' -> ' + event.currentTarget.id + "]\n";
+    },
+    c_event: function(event) {
+      this.message += "Cイベント [" + event.target.id + ' -> ' + event.currentTarget.id + "]\n";
+    },
+    clear: function() {
+      this.message = "";
     }
-  },
-  created: function() {
-    this.val = 5;
   }
 }
 </script>
@@ -52,5 +49,20 @@ div {
   margin: 0px;
   padding: 0px;
   text-align: left;
+}
+div.out {
+  background-color: aqua;
+  width: 300px;
+  height: 200px;
+}
+div.mid {
+  background-color: red;
+  width: 200px;
+  height: 175px;
+}
+div.in {
+  background-color: green;
+  width: 100px;
+  height: 150px;
 }
 </style>
