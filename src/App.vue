@@ -2,7 +2,11 @@
   <div id="app">
     <!-- コンポーネントを使う -->
     <!-- コンポーネントのtitleに、このコンポーネントのmessageの値をbindする -->
-    <HelloWorld v-bind:title="message" />
+    <HelloWorld title="slot">
+      <li v-for="obj in slotObjs" v-bind:key="obj.name">
+        {{ obj.name }} ({{ obj.mail }})
+      </li>
+    </HelloWorld>
   </div>
 </template>
 
@@ -18,7 +22,11 @@ export default {
   // 変数を用意
   data: function() {
     return {
-      message: "validate",
+      slotObjs: [
+        { name: "taro", mail: "taro@gamil.com" },
+        { name: "hanako", mail: "hanako@gamil.com" },
+        { name: "hide", mail: "hide@gamil.com" },
+      ]
     };
   }
 }
